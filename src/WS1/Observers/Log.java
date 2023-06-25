@@ -1,19 +1,20 @@
 package WS1.Observers;
 
+import WS1.Observables.Trend;
+import WS1.Observables.WeatherMonitoringSystem;
+
 public class Log {
     public Log() {
         System.out.println("Log was created");
-        WeatherMonitoringSystem.theInstance().addPressureObserver(new LogPressObserver(this));
-        WeatherMonitoringSystem.theInstance()
-                .addPressureTrendObserver(new LogPressTrendObserver(this));
+        new LogPressObserver(this);
+        new LogPressTrendObserver(this);
     }
 
-    public void displayPressure(int data) {
-        System.out.println("log: pressure = " + data + " millibars");
+    public void displayPressure(int p) {
+        System.out.println("Log: pressure = " + p + " millibars");
     }
 
-    public void displayPressureTrend(Trend data) {
-        System.out.println("log: pressure trend = " + data.toString());
+    public void displayPressureTrend(Trend pt) {
+        System.out.println("Log: pressure trend = " + pt);
     }
-
 }

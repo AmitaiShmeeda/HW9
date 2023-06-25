@@ -1,52 +1,45 @@
 package WS1.Observables;
+import WS1.Observers.Observer;
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class PressureTrendSensor extends Observable<Trend> implements Observer<Integer> {
+    private static final int MAX_READINGS = 3;
 
-    private Integer read1;
-    private Integer read2;
-    private Trend trend1;
-    private Trend trend2;
+    private Queue<Integer> lastReadings;
+    private Trend lastState;
 
-    public PressureTrendSensor(PressureSensor pressureSensor) {
-        super();
-        pressureSensor.registerObserver(this);
-        read1 = null;
+    public PressureTrendSensor() {
+        lastReadings = new LinkedList<>();
     }
 
-    public void check() {
-        if (trend1 == null || trend2 == null) {
-            return;
-        }
-        if (trend2 != trend1) {
-            notifyObservers(trend2);
-        }
-    }
-
-    public Trend calc() {
-        if (read1 != null) {
-            if (read1 < read2) {
-                return Trend.RISING;
-            } else if (read1 > read2) {
-                return Trend.FALLING;
-            } else {
-                return Trend.STABLE;
-            }
+    public Trend calculateTrend() {
+        Integer[] readings = lastReadings.toArray(new Integer[0]);
+        if (readings[0] < readings[1] && readings[1] < readings[2]) {
+            return Trend.FALLING;
+        } else if (readings[0] > readings[1] && readings[1] > readings[2]) {
+            return Trend.RISING;
         } else {
-            return null;
+            return Trend.STABLE;
         }
     }
 
-    @Override
-    public void update(Integer data) {
-        read1 = read2;
-        read2 = data;
-        trend1 = trend2;
-        trend2 = calc();
-        check();
+    public void checkAndNotify() {
+        Trend currentPressureState = calculateTrend();
+        if (currentPressureState != lastState) {
+            notifyObservers(currentPressureState);
+        }
+        lastState = currentPressureState;
     }
 
     @Override
-    public String getName() {
-        return "PressureTrendSensor";
+    public void update(Integer temperature) {
+        if (lastReadings.size() == MAX_READINGS) {
+            lastReadings.poll(); // remove the oldest reading
+        }
+        lastReadings.offer(temperature); // add the new reading
+        if (lastReadings.size() == MAX_READINGS) {
+            checkAndNotify();
+        }
     }
 }

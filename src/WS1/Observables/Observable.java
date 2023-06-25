@@ -1,27 +1,19 @@
 package WS1.Observables;
-
+import WS1.Observers.Observer;
 import java.util.ArrayList;
 import java.util.List;
-import WS1.Observers.Observer;
 
-public abstract class Observable<T> {
-    private List<Observer<T>> observers;
 
-    protected Observable() {
-        this.observers = new ArrayList<>();
+public class Observable<T> {
+    private List<Observer<T>> itsObservers = new ArrayList<>();
+    public void addObserver(Observer<T> observer) {
+        itsObservers.add(observer);
     }
 
-    public void registerObserver(Observer<T> observer) {
-        observers.add(observer);
-        System.out.println(observer.getName() + " observes " + getName());
-    }
 
     public void notifyObservers(T data) {
-        for (Observer<T> observer : observers) {
+        for (Observer<T> observer : itsObservers) {
             observer.update(data);
         }
     }
-
-    public abstract String getName();
-
 }

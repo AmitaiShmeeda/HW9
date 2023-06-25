@@ -1,21 +1,21 @@
 package WS1.Observers;
 
-public class LogPressTrendObserver implements Observer<Trend> {
+import WS1.Observables.Trend;
+import WS1.Observables.WeatherMonitoringSystem;
 
+
+
+public class LogPressTrendObserver implements Observer<Trend> {
     private Log log;
 
     public LogPressTrendObserver(Log log) {
         System.out.println("LogPressTrendObserver was created");
         this.log = log;
+        WeatherMonitoringSystem.theInstance().registerPressureTrendObserver("LogPressTrendObserver", this);
     }
 
     @Override
-    public void update(Trend data) {
-        log.displayPressureTrend(data);
-    }
-
-    @Override
-    public String getName() {
-        return "LogPressTrendObserver";
-    }
+    public void update(Trend trend) {
+        log.displayPressureTrend(trend);
+    } // TODO CHECK
 }

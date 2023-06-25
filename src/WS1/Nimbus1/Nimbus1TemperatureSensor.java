@@ -7,15 +7,13 @@ import WS1.Observables.SensorAlarmListener;
 import java.util.Random;
 
 
-
-public class Nimbus1PressureSensor extends Sensor {
-    private static final int BASE_PRESSURE = 950;
-    private static final int RANDOM_PRESSURE_RANGE = 100;
+public class Nimbus1TemperatureSensor extends Sensor {
+    private static final int MAX_TEMPERATURE = 40;
 
     private final Random rnd;
 
-    public Nimbus1PressureSensor(String type) {
-        super(type, 1_100);
+    public Nimbus1TemperatureSensor(String type) {
+        super(type, 700);
         rnd = RandomSupplier.getRnd();
         addSensorAlarmListener();
     }
@@ -26,7 +24,6 @@ public class Nimbus1PressureSensor extends Sensor {
 
     @Override
     public int read() {
-        return BASE_PRESSURE + rnd.nextInt(RANDOM_PRESSURE_RANGE);
+        return rnd.nextInt(MAX_TEMPERATURE);
     }
 }
-
